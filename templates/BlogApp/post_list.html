@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+{% extends 'BlogApp/base.html' %}
+{% load static %}
+{% block title %}{{ user.username|title }}{% endblock %}
+{% block content %}
+    <input type="checkbox" name="" id="check">
+    <label for="check">
+        <i class="fas fa-bars " id=btn></i>
+        <i class="fas fa-times" id="cancel"></i>
+    </label>
+    <div class="sidebar1">
+        <header>My Apps</header>
+    <ul id="u1">
+        <li><a href="#"><i class="fas fa-qrcode"></i>Dashboard</a> </li>
+        <li><a href="#"><i class="fas fa-link"></i>Shortcuts</a> </li>
+        <li><a href="#"><i class="fas fa-stream"></i>Overview</a></li>
+        <li><a href="#"><i class="fas fa-calendar-week"></i>Events</a> </li>
+        <li><a href="#"><i class="fas fa-sliders-h"></i>Services</a>
+        <li><a href="#"><i class="fas fa-envelope"></i>Contact</a></li>
+        <li><a href="#"><i class="far fa-question-circle"></i>About us</a></li>
+        <li><a href="/logout/"><i class="far fa-question-circle"></i>Logout</a></li>
+    </ul>
+    </div>
+    <h1>{{ user.username}} Blog</h1>
+    <p align="right" style="color: black"><b>Welcome: {{ user.username}}</b></p>
+    <a href="/post/"><button>Add Post</button></a>
+    <hr/>
+    {% if tag %}
+        <h2>Posts tagged with "{{ tag.name }}"</h2>
+    {% endif %}
+    {%for post in postlist%}
+        <h2><a href="{{post.get_absolute_url}}">{{post.title}}
+            {%   with x=post.images.name|slice:"-3::" %}
+        {{ x }}
+
+           {% if x == "jpg"%}
+           <img  src="/media/{{ post.images }}" width="50" height="40"/>
+           {% elif x == "mp4" %}
+               <video autoplay="autoplay" controls="controls" width="300px" height="300px">
+						<source src="{% static 'images/file_example_MP4_480_1_5MG.mp4' %}" type="video/mp4"></source>
+               </video>
+           {% elif x == "pdf" %}
+               <!--<p>Downloadable file</p>-->
+               <ol>
+                    <li>
+                        <a href="/media/images/{{ post.images }}">pdf file</a>
+                    </li>
+               </ol>
+           {% endif %}
+        </a> </h2>
+        <p>
+            Tags:
+            {% for tag in post.tags.all %}
+                <a href="{%url "post_list_by_tag_name" tag.slug %}">{{tag.name}}</a>
+                {%if not forloop.last%}, {%endif%}{%endfor%}
+        </p>
+        <p id='date'>Published on {{ post.publish}} by {{ post.author|title }}</p>
+        {{ post.body| truncatewords:30|linebreaks }}
+        {% endwith %}
+    {% endfor %}
+    {%include 'BlogApp/pagination.html' with page=postlist%}
+    <br/><br/>
+    {%comment  %}{% include 'BlogApp/pagination.html' with page=page_obj %}{% endcomment %}
+{% endblock %}
+<body >
+<img src="https://mk0careergirlda22ty0.kinstacdn.com/wp-content/uploads/2016/08/fmarin-160517-damselindior-CO6A0705.jpg">
+</body>
